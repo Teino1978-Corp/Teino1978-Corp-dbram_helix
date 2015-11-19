@@ -1,0 +1,113 @@
+
+Advisors
+	has_many :licenses
+	has_many :contacts
+	has_many :contact_records, foreign_key => :owner_id
+	has_many :clients
+	has_many :affiliates
+	has_one :office
+	belongs_to :manager
+
+License
+	belongs_to :advisors, :through => :licensing_entity
+
+Licensing_Entity
+	has_many :advisors
+
+
+Office
+	belongs_to :manager
+	has_many :advisors
+
+Manager
+	has_many :advisors
+
+
+http://stackoverflow.com/questions/472227/rails-has-many-through-or-has-many-and-belongs-to
+
+Clients
+	has_many :advisors, :through => :client_relationship_manager
+	belongs_to :advisors
+	has_many :accounts
+	has_many :proposals
+	has_many :tasks
+	has_one :office
+
+Client_Relationship_Manager
+	
+
+ContactRecord
+	class ContactRecord < ActiveRecord::Base
+		belongs_to :owner, :class_name => "User"
+		belongs_to :user
+	end
+
+
+Accounts
+	has_many :securities
+
+def find_or_create_by_name(name)
+      first_name, last_name = name.split(" ", 2)
+      find_or_create_by_first_name_and_last_name(first_name, last_name
+If you need to share the same extensions between many associations, you can use a named extension module.
+module FindOrCreateByNameExtension
+  def find_or_create_by_name(name)
+    first_name, last_name = name.split(" ", 2)
+    find_or_create_by_first_name_and_last_name(first_name, last_name)
+  end
+end
+
+class Account < ActiveRecord::Base
+  has_many :people, :extend => FindOrCreateByNameExtension
+end
+
+class Company < ActiveRecord::Base
+  has_many :people, :extend => FindOrCreateByNameExtension
+end
+If you need to use multiple named extension modules, you can specify an array of modules with the :extend option. In the case of name conflicts between methods in the modules, methods in modules later in the array supercede those earlier in the array.
+class Account < ActiveRecord::Base
+  has_many :people, :extend => [FindOrCreateByNameExtension, FindRecentExtension]
+end
+
+
+
+Securities_Manager
+	belongs_to :advisor
+	has_many :securities
+
+Securities
+	has_many :transactions
+
+
+Personal_Assets
+
+
+
+Personal_Liabilities
+
+
+Transactions
+
+#New order for a customer
+@order = Order.create(:order_date => Time.now, :customer_id => @customer.id)
+
+or better yet, with associations- 
+
+
+@order = @customer.orders.create(:order_date => Time.now)
+
+
+#Delete customer and all its orders:
+@orders = Order.find_all_by_customer_id(@customer.id) @orders.each do |order| order.destroy
+end
+
+@customer.destroy
+
+Better done with associations:
+
+@customer.destroy
+
+
+
+
+
